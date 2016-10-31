@@ -1,12 +1,10 @@
 package app.jyh.com.webpdemo;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -35,6 +33,7 @@ public class WebpSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 	private Subscription subscription;
 	private WebPImage webPImage;
 	private Paint paint;
+	SurfaceHolder holder = null;
 
 	public WebpSurfaceView(Context context) {
 		super(context);
@@ -51,16 +50,33 @@ public class WebpSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 		init();
 	}
 
-	@TargetApi(Build.VERSION_CODES.LOLLIPOP)
-	public WebpSurfaceView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-		super(context, attrs, defStyleAttr, defStyleRes);
-		init();
-	}
-
 	private void init() {
 		paint = new Paint();
-		paint.setColor(Color.GREEN);
-		Observable.just(R.raw.test)
+		paint.setColor(Color.BLACK);
+
+		SurfaceHolder holder = getHolder();
+		holder.addCallback(this); //设置Surface生命周期回调
+	}
+
+	@Override
+	public void surfaceCreated(final SurfaceHolder holder) {
+		this.holder = holder;
+	}
+
+	@Override
+	public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+
+	}
+
+	@Override
+	public void surfaceDestroyed(SurfaceHolder holder) {
+		if (subscription != null && !subscription.isUnsubscribed()) {
+			subscription.unsubscribe();
+		}
+	}
+
+	private void loadWebp(Integer res){
+		Observable.just(res)
 				.observeOn(Schedulers.io())
 				.map(new Func1<Integer, WebPImage>() {
 					@Override
@@ -84,6 +100,7 @@ public class WebpSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 					@Override
 					public void call(WebPImage image) {
 						webPImage = image;
+						showWebp();
 					}
 				}, new Action1<Throwable>() {
 					@Override
@@ -91,13 +108,10 @@ public class WebpSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 						Log.e("Main", Log.getStackTraceString(throwable));
 					}
 				});
-		SurfaceHolder holder = getHolder();
-		holder.addCallback(this); //设置Surface生命周期回调
 	}
 
-	@Override
-	public void surfaceCreated(final SurfaceHolder holder) {
-		subscription = Observable.interval(100, TimeUnit.MILLISECONDS)
+	private void showWebp (){
+		subscription = Observable.interval(50, TimeUnit.MILLISECONDS)
 				.observeOn(Schedulers.computation())
 				.map(new Func1<Long, Long>() {
 					@Override
@@ -114,7 +128,7 @@ public class WebpSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 						canvas.drawColor(Color.BLACK);
 						WebPFrame frame = webPImage.getFrame(aLong.intValue());
 						Bitmap bitmap = Bitmap.createBitmap(frame.getWidth(), frame.getHeight(), Bitmap.Config.ARGB_8888);
-						frame.renderFrame(frame.getWidth(), bitmap.getHeight(), bitmap);
+						frame.renderFrame(frame.getWidth(), frame.getHeight(), bitmap);
 						canvas.drawBitmap(bitmap, 0, 0, paint);
 						holder.unlockCanvasAndPost(canvas);
 					}
@@ -126,15 +140,30 @@ public class WebpSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 				});
 	}
 
-	@Override
-	public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+	public void show_100(){
+		if(holder == null){
+			return;
+		}
 
+		webPImage = null;
+		loadWebp(R.raw.output_100);
 	}
 
-	@Override
-	public void surfaceDestroyed(SurfaceHolder holder) {
-		if (subscription != null && !subscription.isUnsubscribed()) {
-			subscription.unsubscribe();
+	public void show_70(){
+		if(holder == null){
+			return;
 		}
+
+		webPImage = null;
+		loadWebp(R.raw.output_70);
+	}
+
+	public void show_8sec(){
+		if(holder == null){
+			return;
+		}
+
+		webPImage = null;
+		loadWebp(R.raw.output_8sen);
 	}
 }
