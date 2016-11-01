@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/bg_liveroom"
     tools:context="app.jyh.com.webpdemo.MainActivity">
 
     <app.jyh.com.webpdemo.WebpSurfaceView
@@ -11,6 +12,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerInParent="true"/>
+
+    <ImageView
+        android:id="@+id/iv_webp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleType="centerCrop"
+        android:layout_centerInParent="true"
+        />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -30,31 +39,47 @@
             android:textSize="20dp"
             android:text="sdf"
             />
-        <LinearLayout
+        <HorizontalScrollView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             >
-            <Button
-                android:id="@+id/btn_70"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="70"
-                android:layout_marginRight="20dp"
-                />
-            <Button
-                android:id="@+id/btn_100"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="20dp"
-                android:text="100"
-                />
-            <Button
-                android:id="@+id/btn_8sec"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="8s"
-                />
-        </LinearLayout>
+                android:orientation="horizontal"
+                >
+                <Button
+                    android:id="@+id/btn_webp_img"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="webp_img"
+                    android:layout_marginRight="20dp"
+                    />
+                <Button
+                    android:id="@+id/btn_70"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="70"
+                    android:layout_marginRight="20dp"
+                    />
+                <Button
+                    android:id="@+id/btn_100"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginRight="20dp"
+                    android:text="100"
+                    />
+                <Button
+                    android:id="@+id/btn_8sec"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="8s"
+                    />
+            </LinearLayout>
+        </HorizontalScrollView>
     </LinearLayout>
 </RelativeLayout>

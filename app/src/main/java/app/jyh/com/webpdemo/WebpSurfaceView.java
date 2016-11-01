@@ -5,6 +5,9 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PixelFormat;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -54,7 +57,9 @@ public class WebpSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 		paint = new Paint();
 		paint.setColor(Color.BLACK);
 
+		setZOrderOnTop(true);
 		SurfaceHolder holder = getHolder();
+		holder.setFormat(PixelFormat.TRANSLUCENT);
 		holder.addCallback(this); //设置Surface生命周期回调
 	}
 
@@ -125,7 +130,15 @@ public class WebpSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 					public void call(Long aLong) {
 						Log.d("Main","draw " + aLong + " frame");
 						Canvas canvas = holder.lockCanvas(null);
-						canvas.drawColor(Color.BLACK);
+
+						canvas.drawColor(Color.TRANSPARENT);
+
+						//清屏
+						Paint p = new Paint();
+						p.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
+						canvas.drawPaint(p);
+						p.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC));
+
 						WebPFrame frame = webPImage.getFrame(aLong.intValue());
 						Bitmap bitmap = Bitmap.createBitmap(frame.getWidth(), frame.getHeight(), Bitmap.Config.ARGB_8888);
 						frame.renderFrame(frame.getWidth(), frame.getHeight(), bitmap);

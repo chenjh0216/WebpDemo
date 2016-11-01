@@ -9,6 +9,7 @@
         android:supportsRtl="true">
         <activity android:name=".MainActivity"
             android:hardwareAccelerated="true"
+            android:theme="@style/ActivityFullScreen"
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
